@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.bbs.mapper.BoardMapper">
+
+	<select id="getBoardList" resultType="java.util.HashMap">
+		SELECT 
+			POST_ID AS num,
+			POST_TITLE AS title,
+			CREATE_USER AS createUser,
+			TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS createDate
+		FROM 	POST	
+		ORDER BY TO_NUMBER(POST_ID) DESC
+	</select>
+	
+	<insert id="addBoard" parameterType="java.util.HashMap">
+		INSERT INTO POST
+		(
+			BOARD_ID, 
+			POST_ID, 
+			POST_TYPE, 
+			POST_TITLE, 
+			POST_CONTENT,
+			VIEW_CNT,
+			FILE_NO1,
+			FILE_NO2,
+			CREATE_DATE,
+			CREATE_USER,
+			UPDATE_DATE,
+			UPDATE_USER
+		)
+		VALUES
+		(
+			'1',
+			(
+				SELECT 
+					NVL(MAX(TO_NUMBER(POST_ID)), 0) + 1
+				FROM POST
+			),
+			'1',
+			#{title},
+			#{content},
+			'0',
+			NULL,
+			NULL,
+			TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+			#{createUser},
+			TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+			#{createUser}
+		)
+	</insert>
+	
+</mapper>
